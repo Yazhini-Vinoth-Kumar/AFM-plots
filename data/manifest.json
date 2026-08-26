@@ -1,0 +1,219 @@
+[
+  {
+    "folder": "20_cell1part1",
+    "file": "20_cell1part1_5c9e1e69.json",
+    "count": 93,
+    "condition": "20",
+    "sheet": "cell1part1"
+  },
+  {
+    "folder": "20_cell1part2",
+    "file": "20_cell1part2_0849a019.json",
+    "count": 83,
+    "condition": "20",
+    "sheet": "cell1part2"
+  },
+  {
+    "folder": "20_cell2part1",
+    "file": "20_cell2part1_3f7094c5.json",
+    "count": 61,
+    "condition": "20",
+    "sheet": "cell2part1"
+  },
+  {
+    "folder": "20_cell2part2",
+    "file": "20_cell2part2_491f12ae.json",
+    "count": 83,
+    "condition": "20",
+    "sheet": "cell2part2"
+  },
+  {
+    "folder": "20_cell3part1",
+    "file": "20_cell3part1_da92dd86.json",
+    "count": 36,
+    "condition": "20",
+    "sheet": "cell3part1"
+  },
+  {
+    "folder": "20_cell3part2",
+    "file": "20_cell3part2_ca5e8d60.json",
+    "count": 47,
+    "condition": "20",
+    "sheet": "cell3part2"
+  },
+  {
+    "folder": "20_cell3part3",
+    "file": "20_cell3part3_f8e8e466.json",
+    "count": 25,
+    "condition": "20",
+    "sheet": "cell3part3"
+  },
+  {
+    "folder": "320_cell1part1",
+    "file": "320_cell1part1_23ba625b.json",
+    "count": 67,
+    "condition": "320",
+    "sheet": "cell1part1"
+  },
+  {
+    "folder": "320_cell1part2",
+    "file": "320_cell1part2_900beb65.json",
+    "count": 47,
+    "condition": "320",
+    "sheet": "cell1part2"
+  },
+  {
+    "folder": "320_cell2part1",
+    "file": "320_cell2part1_674b6619.json",
+    "count": 58,
+    "condition": "320",
+    "sheet": "cell2part1"
+  },
+  {
+    "folder": "320_cell2part2",
+    "file": "320_cell2part2_871abaef.json",
+    "count": 7,
+    "condition": "320",
+    "sheet": "cell2part2"
+  },
+  {
+    "folder": "320_cell2part3",
+    "file": "320_cell2part3_3c0ea41e.json",
+    "count": 20,
+    "condition": "320",
+    "sheet": "cell2part3"
+  },
+  {
+    "folder": "320_cell2part4",
+    "file": "320_cell2part4_d02c6c1f.json",
+    "count": 30,
+    "condition": "320",
+    "sheet": "cell2part4"
+  },
+  {
+    "folder": "320_cell3part1",
+    "file": "320_cell3part1_9ba9f9b9.json",
+    "count": 65,
+    "condition": "320",
+    "sheet": "cell3part1"
+  },
+  {
+    "folder": "320_cell3part2",
+    "file": "320_cell3part2_45dc716f.json",
+    "count": 38,
+    "condition": "320",
+    "sheet": "cell3part2"
+  },
+  {
+    "folder": "320_cell3part3",
+    "file": "320_cell3part3_fd554382.json",
+    "count": 21,
+    "condition": "320",
+    "sheet": "cell3part3"
+  },
+  {
+    "folder": "+ve_cell1part1",
+    "file": "plus_ve_cell1part1_c9b4955a.json",
+    "count": 51,
+    "condition": "+ve",
+    "sheet": "cell1part1"
+  },
+  {
+    "folder": "+ve_cell1part2",
+    "file": "plus_ve_cell1part2_02f6d9a6.json",
+    "count": 40,
+    "condition": "+ve",
+    "sheet": "cell1part2"
+  },
+  {
+    "folder": "+ve_cell1part3",
+    "file": "plus_ve_cell1part3_52d69a92.json",
+    "count": 14,
+    "condition": "+ve",
+    "sheet": "cell1part3"
+  },
+  {
+    "folder": "+ve_cell2part1",
+    "file": "plus_ve_cell2part1_24861ce8.json",
+    "count": 28,
+    "condition": "+ve",
+    "sheet": "cell2part1"
+  },
+  {
+    "folder": "+ve_cell2part2",
+    "file": "plus_ve_cell2part2_479177c7.json",
+    "count": 42,
+    "condition": "+ve",
+    "sheet": "cell2part2"
+  },
+  {
+    "folder": "+ve_cell2part3",
+    "file": "plus_ve_cell2part3_0ca22120.json",
+    "count": 31,
+    "condition": "+ve",
+    "sheet": "cell2part3"
+  },
+  {
+    "folder": "+ve_cell2part4",
+    "file": "plus_ve_cell2part4_7200d742.json",
+    "count": 40,
+    "condition": "+ve",
+    "sheet": "cell2part4"
+  },
+  {
+    "folder": "-ve_cell1part1",
+    "file": "minus_ve_cell1part1_63cc98ed.json",
+    "count": 20,
+    "condition": "-ve",
+    "sheet": "cell1part1"
+  },
+  {
+    "folder": "-ve_cell1part2",
+    "file": "minus_ve_cell1part2_1bfa0531.json",
+    "count": 37,
+    "condition": "-ve",
+    "sheet": "cell1part2"
+  },
+  {
+    "folder": "-ve_cell1part3",
+    "file": "minus_ve_cell1part3_786a8c7e.json",
+    "count": 37,
+    "condition": "-ve",
+    "sheet": "cell1part3"
+  },
+  {
+    "folder": "-ve_cell1part4",
+    "file": "minus_ve_cell1part4_4f95370a.json",
+    "count": 10,
+    "condition": "-ve",
+    "sheet": "cell1part4"
+  },
+  {
+    "folder": "-ve_cell2part1",
+    "file": "minus_ve_cell2part1_c18b4896.json",
+    "count": 80,
+    "condition": "-ve",
+    "sheet": "cell2part1"
+  },
+  {
+    "folder": "-ve_cell2part2",
+    "file": "minus_ve_cell2part2_a035a5e8.json",
+    "count": 37,
+    "condition": "-ve",
+    "sheet": "cell2part2"
+  },
+  {
+    "folder": "-ve_cell3part1",
+    "file": "minus_ve_cell3part1_b05d000b.json",
+    "count": 82,
+    "condition": "-ve",
+    "sheet": "cell3part1"
+  },
+  {
+    "folder": "-ve_cell3part2",
+    "file": "minus_ve_cell3part2_f6de18a9.json",
+    "count": 29,
+    "condition": "-ve",
+    "sheet": "cell3part2"
+  }
+]
