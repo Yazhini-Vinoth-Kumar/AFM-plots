@@ -163,21 +163,21 @@
   {
     "folder": "-ve_cell1part1",
     "file": "minus_ve_cell1part1_63cc98ed.json",
-    "count": 20,
+    "count": 18,
     "condition": "-ve",
     "sheet": "cell1part1"
   },
   {
     "folder": "-ve_cell1part2",
     "file": "minus_ve_cell1part2_1bfa0531.json",
-    "count": 37,
+    "count": 35,
     "condition": "-ve",
     "sheet": "cell1part2"
   },
   {
     "folder": "-ve_cell1part3",
     "file": "minus_ve_cell1part3_786a8c7e.json",
-    "count": 37,
+    "count": 22,
     "condition": "-ve",
     "sheet": "cell1part3"
   },
@@ -191,28 +191,28 @@
   {
     "folder": "-ve_cell2part1",
     "file": "minus_ve_cell2part1_c18b4896.json",
-    "count": 80,
+    "count": 72,
     "condition": "-ve",
     "sheet": "cell2part1"
   },
   {
     "folder": "-ve_cell2part2",
     "file": "minus_ve_cell2part2_a035a5e8.json",
-    "count": 37,
+    "count": 33,
     "condition": "-ve",
     "sheet": "cell2part2"
   },
   {
     "folder": "-ve_cell3part1",
     "file": "minus_ve_cell3part1_b05d000b.json",
-    "count": 82,
+    "count": 66,
     "condition": "-ve",
     "sheet": "cell3part1"
   },
   {
     "folder": "-ve_cell3part2",
     "file": "minus_ve_cell3part2_f6de18a9.json",
-    "count": 29,
+    "count": 27,
     "condition": "-ve",
     "sheet": "cell3part2"
   }
