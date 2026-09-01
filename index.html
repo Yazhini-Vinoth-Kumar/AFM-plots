@@ -198,6 +198,26 @@ button {
 }
 
 
+.jpk-source {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed #d8d8d8;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+.jpk-source-row {
+    margin: 4px 0;
+    overflow-wrap: anywhere;
+}
+
+
+.jpk-source-label {
+    font-weight: 600;
+}
+
+
 .metadata {
     margin-top: 25px;
     font-size: 13px;
@@ -448,6 +468,38 @@ tbody tr.selected {
                 <span class="metric-unit">pN</span>
             </div>
 
+            <div class="jpk-source">
+                <div class="jpk-source-row">
+                    <span class="jpk-source-label">JPK source folder:</span>
+                    <span id="jpkSourceFolderValue">N/A</span>
+                </div>
+
+                <div class="jpk-source-row">
+                    <span class="jpk-source-label">JPK TSV path:</span>
+                    <span id="jpkSourcePathValue">N/A</span>
+                </div>
+
+                <div class="jpk-source-row">
+                    <span class="jpk-source-label">TSV row:</span>
+                    <span id="jpkSourceRowValue">N/A</span>
+                </div>
+
+                <div class="jpk-source-row">
+                    <span class="jpk-source-label">TSV Filename:</span>
+                    <span id="jpkSourceFilenameValue">N/A</span>
+                </div>
+
+                <div class="jpk-source-row">
+                    <span class="jpk-source-label">Expected match:</span>
+                    <span id="jpkExpectedMatchValue">N/A</span>
+                </div>
+
+                <div class="jpk-source-row">
+                    <span class="jpk-source-label">JPK match:</span>
+                    <span id="jpkMatchStatusValue">N/A</span>
+                </div>
+            </div>
+
         </div>
 
 
@@ -685,6 +737,24 @@ const jpkContactValue =
 
 const jpkBaselineValue =
     document.getElementById("jpkBaselineValue");
+
+const jpkSourceFolderValue =
+    document.getElementById("jpkSourceFolderValue");
+
+const jpkSourcePathValue =
+    document.getElementById("jpkSourcePathValue");
+
+const jpkSourceRowValue =
+    document.getElementById("jpkSourceRowValue");
+
+const jpkSourceFilenameValue =
+    document.getElementById("jpkSourceFilenameValue");
+
+const jpkExpectedMatchValue =
+    document.getElementById("jpkExpectedMatchValue");
+
+const jpkMatchStatusValue =
+    document.getElementById("jpkMatchStatusValue");
 
 const fitSlopeValue =
     document.getElementById("fitSlopeValue");
@@ -1389,6 +1459,39 @@ function updatePlot() {
             6
         );
 
+    jpkSourceFolderValue.textContent =
+        jpk.source_folder
+        ?? "N/A";
+
+    jpkSourcePathValue.textContent =
+        jpk.tsv_path
+        ?? "N/A";
+
+    jpkSourceRowValue.textContent =
+        (
+            jpk.tsv_row_number !== null
+            && jpk.tsv_row_number !== undefined
+        )
+        ? String(jpk.tsv_row_number)
+        : "N/A";
+
+    jpkSourceFilenameValue.textContent =
+        jpk.tsv_filename_field
+        ?? "N/A";
+
+    jpkExpectedMatchValue.textContent =
+        jpk.expected_match
+        ?? "N/A";
+
+    jpkMatchStatusValue.textContent =
+        jpk.match_status
+        ?? "N/A";
+
+    jpkMatchStatusValue.className =
+        jpk.match_status === "OK"
+        ? "status-ok"
+        : "status-error";
+
     // --------------------------------------------------------
     // Fitted values
     // --------------------------------------------------------
@@ -1496,7 +1599,8 @@ function updatePlot() {
         ?? "N/A";
 
     jpkTsvValue.textContent =
-        jpk.tsv_file
+        jpk.tsv_path
+        ?? jpk.tsv_file
         ?? "N/A";
 
     filenameValue.textContent =
