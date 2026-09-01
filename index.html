@@ -1182,20 +1182,42 @@ function updatePlot() {
 
     const shapes = [];
 
-    const boundary = Number(
-        fit.force_boundary_nN
+    const shapeLinearBoundary = Number(
+        fit.linear_boundary_nm
     );
 
-    if (Number.isFinite(boundary)) {
+    const shapeElasticityEnd = Number(
+        fit.elasticity_end_nm
+    );
+
+    if (Number.isFinite(shapeLinearBoundary)) {
 
         shapes.push({
             type: "line",
-            xref: "paper",
-            x0: 0,
-            x1: 1,
-            yref: "y",
-            y0: boundary,
-            y1: boundary,
+            xref: "x",
+            x0: shapeLinearBoundary,
+            x1: shapeLinearBoundary,
+            yref: "paper",
+            y0: 0,
+            y1: 1,
+            line: {
+                color: "#777777",
+                width: 1,
+                dash: "dot"
+            }
+        });
+    }
+
+    if (Number.isFinite(shapeElasticityEnd)) {
+
+        shapes.push({
+            type: "line",
+            xref: "x",
+            x0: shapeElasticityEnd,
+            x1: shapeElasticityEnd,
+            yref: "paper",
+            y0: 0,
+            y1: 1,
             line: {
                 color: "#777777",
                 width: 1,
@@ -1415,17 +1437,24 @@ function updatePlot() {
             "status-error";
     }
 
-    const forceBoundary = Number(
-        fit.force_boundary_nN
+    const linearBoundary = Number(
+        fit.linear_boundary_nm
     );
 
-    if (Number.isFinite(forceBoundary)) {
+    const elasticityEnd = Number(
+        fit.elasticity_end_nm
+    );
+
+    if (
+        Number.isFinite(linearBoundary)
+        && Number.isFinite(elasticityEnd)
+    ) {
 
         fitLinearSetting.textContent =
-            `Linear: y ≥ ${forceBoundary.toFixed(3)} nN to curve maximum`;
+            `Linear: x ≤ ${linearBoundary.toFixed(1)} nm to negative-x curve end`;
 
         fitElasticitySetting.textContent =
-            `Elasticity: y < ${forceBoundary.toFixed(3)} nN to −∞`;
+            `Elasticity: ${linearBoundary.toFixed(1)} nm ≤ x ≤ +${elasticityEnd.toFixed(1)} nm`;
 
     } else {
 
