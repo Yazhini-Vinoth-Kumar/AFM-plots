@@ -91,7 +91,7 @@ button {
 
 .main-layout {
     display: grid;
-    grid-template-columns: minmax(600px, 1fr) 280px;
+    grid-template-columns: minmax(600px, 1fr) 390px;
     gap: 20px;
     margin: 20px;
 }
@@ -135,6 +135,66 @@ button {
 .parameter-unit {
     color: #555555;
     margin-top: 2px;
+}
+
+
+.fit-section {
+    border-top: 1px solid #e2e2e2;
+    padding-top: 14px;
+    margin-top: 14px;
+}
+
+
+.fit-section:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+
+.fit-section h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+
+.metric-row {
+    display: grid;
+    grid-template-columns: minmax(118px, 1fr) auto auto;
+    gap: 8px;
+    align-items: baseline;
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+
+.metric-label {
+    color: #555555;
+}
+
+
+.metric-value {
+    font-family: Consolas, Monaco, monospace;
+    text-align: right;
+}
+
+
+.metric-unit {
+    color: #666666;
+    min-width: 52px;
+}
+
+
+.fit-setting {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 5px 0;
+}
+
+
+.fit-status {
+    margin-top: 10px;
+    font-size: 13px;
 }
 
 
@@ -342,58 +402,137 @@ tbody tr.selected {
         </h2>
 
 
-        <div class="parameter">
+        <div class="fit-section">
 
-            <div class="parameter-name">
-                kB
+            <h3>Actual (JPK)</h3>
+
+            <div class="metric-row">
+                <span class="metric-label">kC</span>
+                <span class="metric-value" id="jpkKcValue">N/A</span>
+                <span class="metric-unit">N/m</span>
             </div>
 
-            <div
-                class="parameter-value"
-                id="kbValue">
-                N/A
+            <div class="metric-row">
+                <span class="metric-label">s</span>
+                <span class="metric-value" id="jpkSlopeValue">N/A</span>
+                <span class="metric-unit">N/m</span>
             </div>
 
-            <div class="parameter-unit">
-                nN/µm
+            <div class="metric-row">
+                <span class="metric-label">kB</span>
+                <span class="metric-value" id="jpkKbValue">N/A</span>
+                <span class="metric-unit">nN/µm</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">E</span>
+                <span class="metric-value" id="jpkEValue">N/A</span>
+                <span class="metric-unit">MPa</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">RMS</span>
+                <span class="metric-value" id="jpkRmsValue">N/A</span>
+                <span class="metric-unit">pN</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">Contact point</span>
+                <span class="metric-value" id="jpkContactValue">N/A</span>
+                <span class="metric-unit">nm</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">Baseline</span>
+                <span class="metric-value" id="jpkBaselineValue">N/A</span>
+                <span class="metric-unit">pN</span>
             </div>
 
         </div>
 
 
-        <div class="parameter">
+        <div class="fit-section">
 
-            <div class="parameter-name">
-                E
+            <h3>From fitting</h3>
+
+            <div class="metric-row">
+                <span class="metric-label">s</span>
+                <span class="metric-value" id="fitSlopeValue">N/A</span>
+                <span class="metric-unit">N/m</span>
             </div>
 
-            <div
-                class="parameter-value"
-                id="eValue">
-                N/A
+            <div class="metric-row">
+                <span class="metric-label">kB</span>
+                <span class="metric-value" id="fitKbValue">N/A</span>
+                <span class="metric-unit">nN/µm</span>
             </div>
 
-            <div class="parameter-unit">
-                MPa
+            <div class="metric-row">
+                <span class="metric-label">E</span>
+                <span class="metric-value" id="fitEValue">N/A</span>
+                <span class="metric-unit">MPa</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">RMS</span>
+                <span class="metric-value" id="fitRmsValue">N/A</span>
+                <span class="metric-unit">pN</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">Linear intercept</span>
+                <span class="metric-value" id="fitInterceptValue">N/A</span>
+                <span class="metric-unit">pN</span>
+            </div>
+
+            <div class="fit-status">
+                <strong>Fit:</strong>
+                <span id="fitStatusValue">N/A</span>
             </div>
 
         </div>
 
 
-        <div class="parameter">
+        <div class="fit-section">
 
-            <div class="parameter-name">
-                RMS
+            <h3>Fit settings</h3>
+
+            <div class="fit-setting" id="fitLinearSetting">
+                Linear: N/A
             </div>
 
-            <div
-                class="parameter-value"
-                id="rmsValue">
-                N/A
+            <div class="fit-setting" id="fitElasticitySetting">
+                Elasticity: N/A
             </div>
 
-            <div class="parameter-unit">
-                pN
+            <div class="fit-setting">
+                ν = <span id="fitNuValue">N/A</span>,
+                α = <span id="fitAlphaValue">N/A</span>°
+            </div>
+
+        </div>
+
+
+        <div class="fit-section">
+
+            <h3>Excel reference</h3>
+
+            <div class="metric-row">
+                <span class="metric-label">kB</span>
+                <span class="metric-value" id="kbValue">N/A</span>
+                <span class="metric-unit">nN/µm</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">E</span>
+                <span class="metric-value" id="eValue">N/A</span>
+                <span class="metric-unit">MPa</span>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-label">RMS</span>
+                <span class="metric-value" id="rmsValue">N/A</span>
+                <span class="metric-unit">pN</span>
             </div>
 
         </div>
@@ -422,12 +561,17 @@ tbody tr.selected {
             </div>
 
             <div>
+                <strong>JPK TSV:</strong>
+                <span id="jpkTsvValue"></span>
+            </div>
+
+            <div>
                 <strong>File:</strong>
                 <span id="filenameValue"></span>
             </div>
 
             <div>
-                <strong>Match:</strong>
+                <strong>Excel match:</strong>
                 <span id="matchValue"></span>
             </div>
 
@@ -520,6 +664,60 @@ const eValue =
 
 const rmsValue =
     document.getElementById("rmsValue");
+
+const jpkKcValue =
+    document.getElementById("jpkKcValue");
+
+const jpkSlopeValue =
+    document.getElementById("jpkSlopeValue");
+
+const jpkKbValue =
+    document.getElementById("jpkKbValue");
+
+const jpkEValue =
+    document.getElementById("jpkEValue");
+
+const jpkRmsValue =
+    document.getElementById("jpkRmsValue");
+
+const jpkContactValue =
+    document.getElementById("jpkContactValue");
+
+const jpkBaselineValue =
+    document.getElementById("jpkBaselineValue");
+
+const fitSlopeValue =
+    document.getElementById("fitSlopeValue");
+
+const fitKbValue =
+    document.getElementById("fitKbValue");
+
+const fitEValue =
+    document.getElementById("fitEValue");
+
+const fitRmsValue =
+    document.getElementById("fitRmsValue");
+
+const fitInterceptValue =
+    document.getElementById("fitInterceptValue");
+
+const fitStatusValue =
+    document.getElementById("fitStatusValue");
+
+const fitLinearSetting =
+    document.getElementById("fitLinearSetting");
+
+const fitElasticitySetting =
+    document.getElementById("fitElasticitySetting");
+
+const fitNuValue =
+    document.getElementById("fitNuValue");
+
+const fitAlphaValue =
+    document.getElementById("fitAlphaValue");
+
+const jpkTsvValue =
+    document.getElementById("jpkTsvValue");
 
 const curveValue =
     document.getElementById("curveValue");
@@ -871,208 +1069,238 @@ function updatePlot() {
         return;
     }
 
-
-    const index =
-        Number(
-            curveSelect.value
-        );
-
+    const index = Number(
+        curveSelect.value
+    );
 
     const curve =
-        currentFolderData
-            .curves[index];
-
+        currentFolderData.curves[index];
 
     if (!curve) {
 
         return;
     }
 
+    const fit = curve.fit || {};
+
+    const jpk = curve.jpk || {};
+
+    const fitOK = (
+        fit.status === "OK"
+    );
 
     // --------------------------------------------------------
     // Approach
     // --------------------------------------------------------
 
     const approachTrace = {
-
-        x:
-            curve.approach_x,
-
-        y:
-            curve.approach_y,
-
-        type:
-            "scatter",
-
-        mode:
-            "lines",
-
-        name:
-            "Approach",
-
+        x: curve.approach_x,
+        y: curve.approach_y,
+        type: "scatter",
+        mode: "lines",
+        name: "Approach",
         line: {
-
-            color:
-                "black",
-
-            width:
-                1.5
+            color: "#1f77b4",
+            width: 1.5
         }
     };
-
 
     // --------------------------------------------------------
     // Retract
     // --------------------------------------------------------
 
     const retractTrace = {
-
-        x:
-            curve.retract_x,
-
-        y:
-            curve.retract_y,
-
-        type:
-            "scatter",
-
-        mode:
-            "lines",
-
-        name:
-            "Retract",
-
+        x: curve.retract_x,
+        y: curve.retract_y,
+        type: "scatter",
+        mode: "lines",
+        name: "Retract",
         line: {
-
-            color:
-                "red",
-
-            width:
-                1.5
+            color: "#ff7f0e",
+            width: 1.5
         }
     };
 
+    const traces = [
+        approachTrace,
+        retractTrace
+    ];
+
+    // --------------------------------------------------------
+    // Linear fit
+    // --------------------------------------------------------
+
+    if (
+        fitOK
+        && Array.isArray(fit.linear_x_nm)
+        && fit.linear_x_nm.length > 0
+    ) {
+
+        traces.push({
+            x: fit.linear_x_nm,
+            y: fit.linear_y_nN,
+            type: "scatter",
+            mode: "lines",
+            name: "Linear fit",
+            line: {
+                color: "#2ca02c",
+                width: 3
+            },
+            hovertemplate:
+                "Linear fit<br>x=%{x:.3f} nm<br>y=%{y:.4f} nN<extra></extra>"
+        });
+    }
+
+    // --------------------------------------------------------
+    // Elasticity fit
+    // --------------------------------------------------------
+
+    if (
+        fitOK
+        && Array.isArray(fit.elasticity_x_nm)
+        && fit.elasticity_x_nm.length > 0
+    ) {
+
+        traces.push({
+            x: fit.elasticity_x_nm,
+            y: fit.elasticity_y_nN,
+            type: "scatter",
+            mode: "lines",
+            name: "Elasticity fit",
+            line: {
+                color: "#d62728",
+                width: 3
+            },
+            hovertemplate:
+                "Elasticity fit<br>x=%{x:.3f} nm<br>y=%{y:.4f} nN<extra></extra>"
+        });
+    }
+
+    // --------------------------------------------------------
+    // Fit-boundary and contact-point guide lines
+    // --------------------------------------------------------
+
+    const shapes = [];
+
+    const boundary = Number(
+        fit.force_boundary_nN
+    );
+
+    if (Number.isFinite(boundary)) {
+
+        shapes.push({
+            type: "line",
+            xref: "paper",
+            x0: 0,
+            x1: 1,
+            yref: "y",
+            y0: boundary,
+            y1: boundary,
+            line: {
+                color: "#777777",
+                width: 1,
+                dash: "dot"
+            }
+        });
+    }
+
+    const contactPoint = Number(
+        jpk.contact_nm
+    );
+
+    if (Number.isFinite(contactPoint)) {
+
+        shapes.push({
+            type: "line",
+            xref: "x",
+            x0: contactPoint,
+            x1: contactPoint,
+            yref: "paper",
+            y0: 0,
+            y1: 1,
+            line: {
+                color: "#777777",
+                width: 1,
+                dash: "dot"
+            }
+        });
+    }
 
     // --------------------------------------------------------
     // Plot layout
     // --------------------------------------------------------
 
     const layout = {
-
         title: {
-
             text:
                 `${currentFolderData.folder} | ${curve.curve_label}`
         },
 
         xaxis: {
-
-            title:
-                "Indentation (nm)",
-
+            title: "Indentation (nm)",
             range: [
-
-                Number(
-                    xMin.value
-                ),
-
-                Number(
-                    xMax.value
-                )
+                Number(xMin.value),
+                Number(xMax.value)
             ],
-
-            zeroline:
-                true
+            zeroline: true
         },
 
         yaxis: {
-
-            title:
-                "Force (nN)",
-
-            zeroline:
-                true,
-
-            autorange:
-                true
+            title: "Force (nN)",
+            zeroline: true,
+            autorange: true
         },
 
         legend: {
-
-            x:
-                0.02,
-
-            y:
-                0.98
+            x: 0.01,
+            y: 0.01,
+            xanchor: "left",
+            yanchor: "bottom",
+            bgcolor: "rgba(255,255,255,0.80)",
+            bordercolor: "#cccccc",
+            borderwidth: 1
         },
 
-        hovermode:
-            "closest",
+        shapes: shapes,
+
+        hovermode: "closest",
 
         margin: {
-
-            l:
-                80,
-
-            r:
-                30,
-
-            t:
-                70,
-
-            b:
-                70
+            l: 80,
+            r: 30,
+            t: 70,
+            b: 70
         }
     };
-
 
     // --------------------------------------------------------
     // Plot controls
     // --------------------------------------------------------
 
     const config = {
-
-        responsive:
-            true,
-
-        displaylogo:
-            false,
-
+        responsive: true,
+        displaylogo: false,
         toImageButtonOptions: {
-
-            format:
-                "png",
-
+            format: "png",
             filename:
                 `${currentFolderData.folder}_${curve.curve_label}`,
-
-            scale:
-                2
+            scale: 2
         }
     };
-
 
     // --------------------------------------------------------
     // Draw graph
     // --------------------------------------------------------
 
     Plotly.react(
-
         "plot",
-
-        [
-            approachTrace,
-            retractTrace
-        ],
-
+        traces,
         layout,
-
         config
     );
 
-
     // --------------------------------------------------------
-    // Update values
+    // Excel reference values
     // --------------------------------------------------------
 
     kbValue.textContent =
@@ -1081,13 +1309,11 @@ function updatePlot() {
             3
         );
 
-
     eValue.textContent =
         formatNumber(
             curve.E,
             3
         );
-
 
     rmsValue.textContent =
         formatNumber(
@@ -1095,32 +1321,160 @@ function updatePlot() {
             2
         );
 
+    // --------------------------------------------------------
+    // Actual JPK values
+    // --------------------------------------------------------
+
+    jpkKcValue.textContent =
+        formatNumber(
+            jpk.kC_N_per_m,
+            12
+        );
+
+    jpkSlopeValue.textContent =
+        formatNumber(
+            jpk.s_N_per_m,
+            7
+        );
+
+    jpkKbValue.textContent =
+        formatNumber(
+            jpk.kB_nN_per_um,
+            6
+        );
+
+    jpkEValue.textContent =
+        formatNumber(
+            jpk.E_MPa,
+            6
+        );
+
+    jpkRmsValue.textContent =
+        formatNumber(
+            jpk.RMS_pN,
+            6
+        );
+
+    jpkContactValue.textContent =
+        formatNumber(
+            jpk.contact_nm,
+            6
+        );
+
+    jpkBaselineValue.textContent =
+        formatNumber(
+            jpk.baseline_pN,
+            6
+        );
+
+    // --------------------------------------------------------
+    // Fitted values
+    // --------------------------------------------------------
+
+    fitSlopeValue.textContent =
+        formatNumber(
+            fit.s_N_per_m,
+            7
+        );
+
+    fitKbValue.textContent =
+        formatNumber(
+            fit.kB_nN_per_um,
+            6
+        );
+
+    fitEValue.textContent =
+        formatNumber(
+            fit.E_MPa,
+            6
+        );
+
+    fitRmsValue.textContent =
+        formatNumber(
+            fit.RMS_pN,
+            6
+        );
+
+    fitInterceptValue.textContent =
+        formatNumber(
+            fit.linear_intercept_pN,
+            6
+        );
+
+    fitStatusValue.textContent =
+        fit.status || "N/A";
+
+    if (fitOK) {
+
+        fitStatusValue.className =
+            "status-ok";
+
+    } else {
+
+        fitStatusValue.className =
+            "status-error";
+    }
+
+    const forceBoundary = Number(
+        fit.force_boundary_nN
+    );
+
+    if (Number.isFinite(forceBoundary)) {
+
+        fitLinearSetting.textContent =
+            `Linear: y ≥ ${forceBoundary.toFixed(3)} nN to curve maximum`;
+
+        fitElasticitySetting.textContent =
+            `Elasticity: y < ${forceBoundary.toFixed(3)} nN to −∞`;
+
+    } else {
+
+        fitLinearSetting.textContent =
+            "Linear: N/A";
+
+        fitElasticitySetting.textContent =
+            "Elasticity: N/A";
+    }
+
+    fitNuValue.textContent =
+        formatNumber(
+            fit.poisson_ratio,
+            2
+        );
+
+    fitAlphaValue.textContent =
+        formatNumber(
+            fit.pyramid_half_angle_deg,
+            2
+        );
+
+    // --------------------------------------------------------
+    // Metadata
+    // --------------------------------------------------------
 
     curveValue.textContent =
         curve.curve_label;
 
-
     folderValue.textContent =
         currentFolderData.folder;
-
 
     excelValue.textContent =
         currentFolderData.excel_file
         ?? "N/A";
 
-
     sheetValue.textContent =
         currentFolderData.sheet
         ?? "N/A";
 
+    jpkTsvValue.textContent =
+        jpk.tsv_file
+        ?? "N/A";
 
     filenameValue.textContent =
         curve.filename;
 
-
     matchValue.textContent =
         curve.match_status;
-
 
     if (
         curve.match_status === "OK"
@@ -1135,19 +1489,13 @@ function updatePlot() {
             "status-error";
     }
 
-
     // --------------------------------------------------------
     // Curve counter
     // --------------------------------------------------------
 
     curveCounter.textContent =
-
         `Curve ${index + 1} of `
-
-        +
-
-        `${currentFolderData.curves.length}`;
-
+        + `${currentFolderData.curves.length}`;
 
     // --------------------------------------------------------
     // Highlight table row
