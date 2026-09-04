@@ -28,15 +28,24 @@ def parse_txt_curve(path: Path):
 
                 if s.startswith("segment:"):
                     in_extend = (
-                        s.split(":", 1)[1].strip().lower() == "extend"
+                        s.split(":", 1)[1].strip().lower()
+                        == "extend"
                     )
 
                 elif s.startswith("columns:"):
-                    columns = s.split(":", 1)[1].strip().split()
+                    columns = (
+                        s.split(":", 1)[1]
+                        .strip()
+                        .split()
+                    )
 
                 continue
 
-            if not in_extend or not columns or not line.strip():
+            if (
+                not in_extend
+                or not columns
+                or not line.strip()
+            ):
                 continue
 
             vals = line.split()
@@ -45,8 +54,20 @@ def parse_txt_curve(path: Path):
                 continue
 
             try:
-                xi = float(vals[columns.index("verticalTipPosition")])
-                yi = float(vals[columns.index("vDeflection")])
+                xi = float(
+                    vals[
+                        columns.index(
+                            "verticalTipPosition"
+                        )
+                    ]
+                )
+                yi = float(
+                    vals[
+                        columns.index(
+                            "vDeflection"
+                        )
+                    ]
+                )
             except Exception:
                 continue
 
@@ -54,15 +75,35 @@ def parse_txt_curve(path: Path):
             y.append(yi)
 
     if not x:
-        raise ValueError(f"No extend curve found in {path}")
+        raise ValueError(
+            f"No extend curve found in {path}"
+        )
 
     return {
         "path": path,
-        "index": int(meta.get("index", "-1")),
-        "xPosition": float(meta.get("xPosition", "nan")),
-        "yPosition": float(meta.get("yPosition", "nan")),
-        "x": np.asarray(x, float),
-        "y": np.asarray(y, float),
+        "index": int(
+            meta.get("index", "-1")
+        ),
+        "xPosition": float(
+            meta.get(
+                "xPosition",
+                "nan",
+            )
+        ),
+        "yPosition": float(
+            meta.get(
+                "yPosition",
+                "nan",
+            )
+        ),
+        "x": np.asarray(
+            x,
+            float,
+        ),
+        "y": np.asarray(
+            y,
+            float,
+        ),
     }
 
 
@@ -76,14 +117,20 @@ def parse_proc(path: Path):
         with zipfile.ZipFile(path) as z:
             name = (
                 "header.properties"
-                if "header.properties" in z.namelist()
+                if "header.properties"
+                in z.namelist()
                 else z.namelist()[0]
             )
 
-            text = z.read(name).decode("utf-8", "replace")
+            text = z.read(name).decode(
+                "utf-8",
+                "replace",
+            )
 
     except zipfile.BadZipFile:
-        text = path.read_text(errors="replace")
+        text = path.read_text(
+            errors="replace"
+        )
 
     for line in text.splitlines():
         if "=" in line:
@@ -93,7 +140,11 @@ def parse_proc(path: Path):
     return out
 
 
-def get_float(d, key, default=np.nan):
+def get_float(
+    d,
+    key,
+    default=np.nan,
+):
     value = d.get(key)
 
     if value is None:
@@ -111,49 +162,86 @@ def get_float(d, key, default=np.nan):
         return default
 
 
-def linear_fit_search(x, y, target_slope, target_interp=np.nan):
+def linear_fit_search(
+    x,
+    y,
+    target_slope,
+    target_interp=np.nan,
+):
     """
     Recover the effective JPK linear-fit X Max.
 
     For this processing chain:
+
         fit range = (-Infinity, X Max]
 
-    More-negative verticalTipPosition corresponds to the deeper,
-    higher-force part of the curve.
+    More-negative verticalTipPosition corresponds
+    to the deeper, higher-force part of the curve.
     """
 
     order = np.argsort(x)
+
     xs = x[order]
     ys = y[order]
 
     best = None
 
-    for j in range(8, len(xs) - 8):
-
+    for j in range(
+        8,
+        len(xs) - 8,
+    ):
         if xs[j] > 0:
             break
 
         xx = xs[: j + 1]
         yy = ys[: j + 1]
 
-        m, b = np.polyfit(-xx, yy, 1)
+        m, b = np.polyfit(
+            -xx,
+            yy,
+            1,
+        )
 
-        x0 = b / m if m else np.nan
+        x0 = (
+            b / m
+            if m
+            else np.nan
+        )
 
-        slope_scale = max(abs(target_slope) * 1e-5, 1e-9)
+        slope_scale = max(
+            abs(target_slope) * 1e-5,
+            1e-9,
+        )
 
-        score = ((m - target_slope) / slope_scale) ** 2
+        score = (
+            (
+                m - target_slope
+            )
+            / slope_scale
+        ) ** 2
 
-        if np.isfinite(target_interp):
-            score += ((x0 - target_interp) / 1e-12) ** 2
+        if np.isfinite(
+            target_interp
+        ):
+            score += (
+                (
+                    x0
+                    - target_interp
+                )
+                / 1e-12
+            ) ** 2
 
-        if best is None or score < best["score"]:
-
+        if (
+            best is None
+            or score
+            < best["score"]
+        ):
             lo = xs[j]
 
             hi = (
                 xs[j + 1]
-                if j + 1 < len(xs)
+                if j + 1
+                < len(xs)
                 else xs[j]
             )
 
@@ -164,7 +252,9 @@ def linear_fit_search(x, y, target_slope, target_interp=np.nan):
                 "slope": m,
                 "intercept": b,
                 "x0": x0,
-                "err": abs(m - target_slope),
+                "err": abs(
+                    m - target_slope
+                ),
                 "score": score,
                 "n": len(xx),
             }
@@ -178,7 +268,10 @@ def fit_elasticity_range(
     xmin=-np.inf,
     xmax=np.inf,
 ):
-    mask = np.ones_like(x, dtype=bool)
+    mask = np.ones_like(
+        x,
+        dtype=bool,
+    )
 
     if np.isfinite(xmin):
         mask &= x >= xmin
@@ -192,23 +285,33 @@ def fit_elasticity_range(
     if len(xx) < 12:
         return None
 
-    # Scale coordinates for numerical stability
+    # Scale coordinates for numerical stability.
     xn = xx * 1e9
     yp = yy * 1e12
 
-    span = max(np.ptp(xn), 1e-6)
+    span = max(
+        np.ptp(xn),
+        1e-6,
+    )
 
-    lo = float(np.min(xn) - 0.1 * span)
+    lo = float(
+        np.min(xn)
+        - 0.1 * span
+    )
+
     hi = float(
         min(
-            np.max(xn) + 0.02 * span,
+            np.max(xn)
+            + 0.02 * span,
             50.0,
         )
     )
 
     def solve_at(xc_nm):
-
-        q = np.maximum(xc_nm - xn, 0.0) ** 2
+        q = np.maximum(
+            xc_nm - xn,
+            0.0,
+        ) ** 2
 
         M = np.column_stack(
             [
@@ -223,12 +326,17 @@ def fit_elasticity_range(
             rcond=None,
         )
 
-        b_pN, A_pN_nm2 = coef
+        (
+            b_pN,
+            A_pN_nm2,
+        ) = coef
 
         if A_pN_nm2 < 0:
-
             A_pN_nm2 = 0.0
-            b_pN = float(np.mean(yp))
+
+            b_pN = float(
+                np.mean(yp)
+            )
 
             pred = np.full_like(
                 yp,
@@ -236,7 +344,6 @@ def fit_elasticity_range(
             )
 
         else:
-
             pred = (
                 b_pN
                 + A_pN_nm2 * q
@@ -244,7 +351,8 @@ def fit_elasticity_range(
 
         rss = float(
             np.sum(
-                (yp - pred) ** 2
+                (yp - pred)
+                ** 2
             )
         )
 
@@ -256,22 +364,40 @@ def fit_elasticity_range(
         )
 
     res = minimize_scalar(
-        lambda xc: solve_at(xc)[0],
-        bounds=(lo, hi),
+        lambda xc: solve_at(
+            xc
+        )[0],
+        bounds=(
+            lo,
+            hi,
+        ),
         method="bounded",
-        options={"xatol": 1e-7},
+        options={
+            "xatol": 1e-7
+        },
     )
 
-    xc_nm = float(res.x)
+    xc_nm = float(
+        res.x
+    )
 
-    rss, bp, Ap, pred = solve_at(
+    (
+        rss,
+        bp,
+        Ap,
+        pred,
+    ) = solve_at(
         xc_nm
     )
 
     rms_pN = float(
         np.sqrt(
             np.mean(
-                (yp - pred) ** 2
+                (
+                    yp
+                    - pred
+                )
+                ** 2
             )
         )
     )
@@ -279,53 +405,192 @@ def fit_elasticity_range(
     return {
         "xmin": xmin,
         "xmax": xmax,
-        "xc": xc_nm * 1e-9,
-        "baseline": float(bp) * 1e-12,
-        "A": float(Ap) * 1e6,
-        "rms": rms_pN * 1e-12,
-        "rss": rss * 1e-24,
+        "xc": (
+            xc_nm * 1e-9
+        ),
+        "baseline": (
+            float(bp)
+            * 1e-12
+        ),
+        "A": (
+            float(Ap)
+            * 1e6
+        ),
+        "rms": (
+            rms_pN
+            * 1e-12
+        ),
+        "rss": (
+            rss
+            * 1e-24
+        ),
         "n": len(xx),
     }
+
+
+def reconstructed_modulus(
+    fit,
+    proc,
+):
+    """
+    Convert the fitted quadratic Hertz-Sneddon
+    coefficient into Young's modulus.
+
+    The current JPK recipe uses a quadratic
+    pyramid model.
+    """
+
+    if fit is None:
+        return np.nan
+
+    A = fit.get(
+        "A",
+        np.nan,
+    )
+
+    nu = get_float(
+        proc,
+        "operation.5.poisson-ratio",
+        0.5,
+    )
+
+    angle = get_float(
+        proc,
+        "operation.5.semi-angle-to-face",
+        20.0,
+    )
+
+    if (
+        not np.isfinite(A)
+        or not np.isfinite(nu)
+        or not np.isfinite(angle)
+    ):
+        return np.nan
+
+    tan_angle = math.tan(
+        math.radians(
+            angle
+        )
+    )
+
+    if (
+        not np.isfinite(
+            tan_angle
+        )
+        or tan_angle == 0
+    ):
+        return np.nan
+
+    return (
+        A
+        * (1 - nu**2)
+        / (0.7453 * tan_angle)
+    )
 
 
 def elastic_score(
     fit,
     target,
     scales,
+    proc,
 ):
+    """
+    Compare a reconstructed elasticity fit
+    against independent quantities saved by JPK.
+
+    The score includes:
+
+    - contact point
+    - baseline
+    - ResidualRMS
+    - Young's modulus
+
+    Lower score is better.
+    """
+
     if fit is None:
         return np.inf
 
     terms = []
 
     for key, tkey in [
-        ("xc", "contact"),
-        ("baseline", "baseline"),
-        ("rms", "rms"),
+        (
+            "xc",
+            "contact",
+        ),
+        (
+            "baseline",
+            "baseline",
+        ),
+        (
+            "rms",
+            "rms",
+        ),
     ]:
-
         tv = target.get(
             tkey,
             np.nan,
         )
 
         if np.isfinite(tv):
-
             terms.append(
                 (
                     (
-                        fit[key] - tv
+                        fit[key]
+                        - tv
                     )
                     / scales[key]
                 )
                 ** 2
             )
 
+    target_E = target.get(
+        "E",
+        np.nan,
+    )
+
+    E_rec = (
+        reconstructed_modulus(
+            fit,
+            proc,
+        )
+    )
+
+    if (
+        np.isfinite(
+            target_E
+        )
+        and target_E > 0
+        and np.isfinite(
+            E_rec
+        )
+    ):
+        # 0.1% relative modulus tolerance.
+        # 100 Pa is used as a numerical floor.
+        E_scale = max(
+            abs(target_E)
+            * 0.001,
+            100.0,
+        )
+
+        terms.append(
+            (
+                (
+                    E_rec
+                    - target_E
+                )
+                / E_scale
+            )
+            ** 2
+        )
+
     if not terms:
         return np.inf
 
     return float(
-        np.mean(terms)
+        np.mean(
+            terms
+        )
     )
 
 
@@ -333,8 +598,13 @@ def candidate_values(
     x,
     step_nm=0.25,
 ):
-    mn = float(np.min(x))
-    mx = float(np.max(x))
+    mn = float(
+        np.min(x)
+    )
+
+    mx = float(
+        np.max(x)
+    )
 
     upper = min(
         0.0,
@@ -345,12 +615,16 @@ def candidate_values(
         upper = mx
 
     vals = np.arange(
-        mn * 1e9 + step_nm,
-        upper * 1e9 + 1e-9,
+        mn * 1e9
+        + step_nm,
+        upper * 1e9
+        + 1e-9,
         step_nm,
     )
 
-    return vals * 1e-9
+    return (
+        vals * 1e-9
+    )
 
 
 def reconstruct_elasticity(
@@ -361,6 +635,18 @@ def reconstruct_elasticity(
     finite_xmax=False,
     step_nm=0.25,
 ):
+    """
+    Reconstruct the effective JPK elasticity fit range.
+
+    Search order:
+      1. -Infinity -> +Infinity
+      2. finite X Min -> +Infinity
+      3. finite X Min -> finite X Max, only when needed
+
+    Finite X Max is searched on actual sampled x positions.
+    This avoids missing narrow effective JPK boundary intervals.
+    """
+
     scales = {
         "xc": 0.25e-9,
         "baseline": 1e-12,
@@ -369,50 +655,65 @@ def reconstruct_elasticity(
 
     tested = []
 
-    # Case 1
-    # Full fitting range
-    f = fit_elasticity_range(
+    def get_score(fit):
+        return elastic_score(
+            fit,
+            target,
+            scales,
+            proc,
+        )
+
+    actual_x = np.sort(
+        np.unique(x)
+    )
+
+    negative_x = actual_x[
+        actual_x < 0
+    ]
+
+    positive_x = actual_x[
+        actual_x > 0
+    ]
+
+    # --------------------------------------------------
+    # 1. Full range
+    # --------------------------------------------------
+
+    full_fit = fit_elasticity_range(
         x,
         y,
         -np.inf,
         np.inf,
     )
 
-    tested.append(
-        (
-            "full",
-            f,
-            elastic_score(
-                f,
-                target,
-                scales,
-            ),
-        )
+    full_result = (
+        "full",
+        full_fit,
+        get_score(full_fit),
     )
+
+    tested.append(full_result)
+
+    # --------------------------------------------------
+    # 2. finite X Min -> +Infinity
+    # --------------------------------------------------
 
     vals = candidate_values(
         x,
         step_nm,
     )
 
-    # Case 2
-    # Finite X Min to +Infinity
     best1 = None
 
     for xmin in vals:
-
-        f = fit_elasticity_range(
+        fit = fit_elasticity_range(
             x,
             y,
             xmin,
             np.inf,
         )
 
-        score = elastic_score(
-            f,
-            target,
-            scales,
-        )
+        score = get_score(fit)
 
         if (
             best1 is None
@@ -420,211 +721,260 @@ def reconstruct_elasticity(
         ):
             best1 = (
                 "xmin_inf",
-                f,
+                fit,
                 score,
             )
 
-    if best1:
+    # Refine X Min around the coarse optimum using
+    # actual sampled x positions.
+    if (
+        best1 is not None
+        and best1[1] is not None
+        and len(negative_x) > 0
+    ):
+        center = best1[1]["xmin"]
 
-        cx = best1[1]["xmin"]
+        local = negative_x[
+            (negative_x >= center - 0.75e-9)
+            &
+            (negative_x <= center + 0.75e-9)
+        ]
 
-        fine = max(
-            0.02,
-            min(
-                0.05,
-                step_nm / 5.0,
-            ),
-        )
-
-        for xmin in (
-            np.arange(
-                cx * 1e9 - 0.75,
-                cx * 1e9 + 0.75 + 1e-9,
-                fine,
-            )
-            * 1e-9
-        ):
-
-            if (
-                xmin <= np.min(x)
-                or xmin
-                >= min(
-                    0.0,
-                    np.max(x),
-                )
-            ):
-                continue
-
-            f = fit_elasticity_range(
+        for xmin in local:
+            fit = fit_elasticity_range(
                 x,
                 y,
                 xmin,
                 np.inf,
             )
 
-            score = elastic_score(
-                f,
-                target,
-                scales,
-            )
+            score = get_score(fit)
 
             if score < best1[2]:
-
                 best1 = (
                     "xmin_inf",
-                    f,
+                    fit,
                     score,
                 )
 
+    if best1 is not None:
         tested.append(best1)
 
-    preliminary = min(
-        tested,
+    simple = min(
+        [
+            t
+            for t in tested
+            if t[0] in (
+                "full",
+                "xmin_inf",
+            )
+        ],
         key=lambda t: t[2],
     )
 
-    # Case 3
-    # Finite X Min and finite X Max
+    # --------------------------------------------------
+    # 3. finite X Min -> finite X Max
+    # --------------------------------------------------
+    #
+    # Do not perform a huge 2D brute-force search.
+    #
+    # Start from the best finite-XMin solution, then:
+    #   A. scan every sampled positive X Max
+    #   B. optimize X Min at that X Max
+    #   C. rescan every X Max
+    #   D. refine X Min once more
+    #
+    # This is sample-aware and much faster.
+    # --------------------------------------------------
+
     need_2d = (
         finite_xmax
-        or preliminary[2] > 0.01
+        or simple[2] > 0.01
     )
 
-    if need_2d and len(vals) > 3:
+    best2 = None
 
-        stride = max(
-            1,
-            int(
-                round(
-                    1.0 / step_nm
-                )
-            ),
-        )
+    if (
+        need_2d
+        and best1 is not None
+        and best1[1] is not None
+        and len(positive_x) > 0
+    ):
+        current_xmin = best1[1]["xmin"]
 
-        mins = vals[::stride]
+        # ----------------------------------------------
+        # Pass A: all sampled positive X Max values
+        # at the best X Min.
+        # ----------------------------------------------
 
-        xmax_grid = (
-            np.arange(
-                max(
-                    0.0,
-                    np.percentile(
-                        x,
-                        30,
-                    )
-                    * 1e9,
-                ),
-                np.max(x) * 1e9,
-                5.0,
+        for xmax in positive_x:
+            if xmax <= current_xmin:
+                continue
+
+            fit = fit_elasticity_range(
+                x,
+                y,
+                current_xmin,
+                xmax,
             )
-            * 1e-9
-        )
 
-        best2 = None
+            score = get_score(fit)
 
-        for xmin in mins:
+            if (
+                best2 is None
+                or score < best2[2]
+            ):
+                best2 = (
+                    "finite_both",
+                    fit,
+                    score,
+                )
 
-            for xmax in xmax_grid:
+        # ----------------------------------------------
+        # Pass B: optimize X Min around the finite-both
+        # candidate while holding X Max fixed.
+        # ----------------------------------------------
 
-                if xmax <= xmin:
+        if (
+            best2 is not None
+            and best2[1] is not None
+        ):
+            current_xmax = best2[1]["xmax"]
+
+            xmin_center = best2[1]["xmin"]
+
+            xmin_local = negative_x[
+                (
+                    negative_x
+                    >= xmin_center - 1.5e-9
+                )
+                &
+                (
+                    negative_x
+                    <= xmin_center + 1.5e-9
+                )
+            ]
+
+            for xmin in xmin_local:
+                if xmin >= current_xmax:
                     continue
 
-                f = fit_elasticity_range(
+                fit = fit_elasticity_range(
                     x,
                     y,
                     xmin,
-                    xmax,
+                    current_xmax,
                 )
 
-                score = elastic_score(
-                    f,
-                    target,
-                    scales,
-                )
+                score = get_score(fit)
 
-                if (
-                    best2 is None
-                    or score < best2[2]
-                ):
-
+                if score < best2[2]:
                     best2 = (
                         "finite_both",
-                        f,
+                        fit,
                         score,
                     )
 
-        if best2:
+        # ----------------------------------------------
+        # Pass C: rescan every sampled positive X Max
+        # at the refined X Min.
+        # ----------------------------------------------
 
-            cxmin = best2[1]["xmin"]
-            cxmax = best2[1]["xmax"]
+        if (
+            best2 is not None
+            and best2[1] is not None
+        ):
+            current_xmin = best2[1]["xmin"]
 
-            xmin_ref = (
-                np.arange(
-                    cxmin * 1e9 - 1.5,
-                    cxmin * 1e9 + 1.5 + 1e-9,
-                    step_nm,
-                )
-                * 1e-9
-            )
-
-            xmax_ref = (
-                np.arange(
-                    cxmax * 1e9 - 8,
-                    cxmax * 1e9 + 8 + 1e-9,
-                    1.0,
-                )
-                * 1e-9
-            )
-
-            for xmin in xmin_ref:
-
-                if (
-                    xmin <= np.min(x)
-                    or xmin
-                    >= min(
-                        0.0,
-                        np.max(x),
-                    )
-                ):
+            for xmax in positive_x:
+                if xmax <= current_xmin:
                     continue
 
-                for xmax in xmax_ref:
+                fit = fit_elasticity_range(
+                    x,
+                    y,
+                    current_xmin,
+                    xmax,
+                )
 
-                    if (
-                        xmax <= xmin
-                        or xmax > np.max(x)
-                    ):
-                        continue
+                score = get_score(fit)
 
-                    f = fit_elasticity_range(
-                        x,
-                        y,
-                        xmin,
-                        xmax,
+                if score < best2[2]:
+                    best2 = (
+                        "finite_both",
+                        fit,
+                        score,
                     )
 
-                    score = elastic_score(
-                        f,
-                        target,
-                        scales,
+        # ----------------------------------------------
+        # Pass D: final local X Min refinement.
+        # ----------------------------------------------
+
+        if (
+            best2 is not None
+            and best2[1] is not None
+        ):
+            current_xmax = best2[1]["xmax"]
+            xmin_center = best2[1]["xmin"]
+
+            xmin_local = negative_x[
+                (
+                    negative_x
+                    >= xmin_center - 0.5e-9
+                )
+                &
+                (
+                    negative_x
+                    <= xmin_center + 0.5e-9
+                )
+            ]
+
+            for xmin in xmin_local:
+                if xmin >= current_xmax:
+                    continue
+
+                fit = fit_elasticity_range(
+                    x,
+                    y,
+                    xmin,
+                    current_xmax,
+                )
+
+                score = get_score(fit)
+
+                if score < best2[2]:
+                    best2 = (
+                        "finite_both",
+                        fit,
+                        score,
                     )
 
-                    if score < best2[2]:
-
-                        best2 = (
-                            "finite_both",
-                            f,
-                            score,
-                        )
-
+        if best2 is not None:
             tested.append(best2)
 
-    best = min(
+    # --------------------------------------------------
+    # Conservative model selection
+    # --------------------------------------------------
+
+    best = simple
+
+    if best2 is not None:
+        finite_score = best2[2]
+        simple_score = simple[2]
+
+        # The extra X Max boundary is accepted only when
+        # the numerical evidence is very strong.
+        if (
+            finite_score < 0.01
+            and finite_score
+            < simple_score * 0.10
+        ):
+            best = best2
+
+    return (
+        best,
         tested,
-        key=lambda t: t[2],
     )
-
-    return best, tested
-
 
 def boundary_interval_for_value(
     x,
@@ -635,17 +985,26 @@ def boundary_interval_for_value(
         np.unique(x)
     )
 
-    if not np.isfinite(value):
-        return value, value
+    if not np.isfinite(
+        value
+    ):
+        return (
+            value,
+            value,
+        )
 
     if kind == "xmin":
-
         included = xs[
             xs >= value
         ]
 
-        if not len(included):
-            return value, value
+        if not len(
+            included
+        ):
+            return (
+                value,
+                value,
+            )
 
         first = included[0]
 
@@ -654,9 +1013,11 @@ def boundary_interval_for_value(
         ]
 
         return (
-            lower[-1]
-            if len(lower)
-            else -np.inf,
+            (
+                lower[-1]
+                if len(lower)
+                else -np.inf
+            ),
             first,
         )
 
@@ -664,8 +1025,13 @@ def boundary_interval_for_value(
         xs <= value
     ]
 
-    if not len(included):
-        return value, value
+    if not len(
+        included
+    ):
+        return (
+            value,
+            value,
+        )
 
     last = included[-1]
 
@@ -675,9 +1041,11 @@ def boundary_interval_for_value(
 
     return (
         last,
-        upper[0]
-        if len(upper)
-        else np.inf,
+        (
+            upper[0]
+            if len(upper)
+            else np.inf
+        ),
     )
 
 
@@ -685,7 +1053,9 @@ def find_dataset_files(
     folder: Path,
 ):
     tsvs = list(
-        folder.glob("*.tsv")
+        folder.glob(
+            "*.tsv"
+        )
     )
 
     procs = list(
@@ -696,7 +1066,10 @@ def find_dataset_files(
 
     txts = [
         p
-        for p in folder.glob("*.txt")
+        for p
+        in folder.glob(
+            "*.txt"
+        )
         if not p.name.lower().endswith(
             (
                 "-young-modulus-extend.txt",
@@ -708,8 +1081,16 @@ def find_dataset_files(
     ]
 
     return (
-        tsvs[0] if tsvs else None,
-        procs[0] if procs else None,
+        (
+            tsvs[0]
+            if tsvs
+            else None
+        ),
+        (
+            procs[0]
+            if procs
+            else None
+        ),
         txts,
     )
 
@@ -724,7 +1105,9 @@ def process_folder(
         tsv,
         proc_path,
         txts,
-    ) = find_dataset_files(folder)
+    ) = find_dataset_files(
+        folder
+    )
 
     if not tsv:
         raise FileNotFoundError(
@@ -733,8 +1116,8 @@ def process_folder(
 
     if not txts:
         raise FileNotFoundError(
-            "No individual curve TXT files found "
-            f"in {folder}"
+            "No individual curve TXT "
+            f"files found in {folder}"
         )
 
     df = pd.read_csv(
@@ -743,7 +1126,9 @@ def process_folder(
     )
 
     proc = (
-        parse_proc(proc_path)
+        parse_proc(
+            proc_path
+        )
         if proc_path
         else {}
     )
@@ -751,15 +1136,23 @@ def process_folder(
     rows = []
 
     by_index = {
-        int(r["Position Index"]): r
-        for _, r in df.iterrows()
+        int(
+            r[
+                "Position Index"
+            ]
+        ): r
+        for _, r
+        in df.iterrows()
     }
 
-    for txt in sorted(txts):
-
+    for txt in sorted(
+        txts
+    ):
         try:
-            curve = parse_txt_curve(
-                txt
+            curve = (
+                parse_txt_curve(
+                    txt
+                )
             )
 
         except Exception as e:
@@ -800,11 +1193,13 @@ def process_folder(
         if np.isfinite(
             target_slope
         ):
-            lin = linear_fit_search(
-                curve["x"],
-                curve["y"],
-                target_slope,
-                target_interp,
+            lin = (
+                linear_fit_search(
+                    curve["x"],
+                    curve["y"],
+                    target_slope,
+                    target_interp,
+                )
             )
         else:
             lin = None
@@ -839,13 +1234,15 @@ def process_folder(
         (
             best,
             tested,
-        ) = reconstruct_elasticity(
-            curve["x"],
-            curve["y"],
-            target,
-            proc,
-            force_finite_xmax,
-            step_nm,
+        ) = (
+            reconstruct_elasticity(
+                curve["x"],
+                curve["y"],
+                target,
+                proc,
+                force_finite_xmax,
+                step_nm,
+            )
         )
 
         (
@@ -870,39 +1267,12 @@ def process_folder(
             )
         )
 
-        nu = get_float(
-            proc,
-            "operation.5.poisson-ratio",
-            0.5,
-        )
-
-        angle = get_float(
-            proc,
-            "operation.5.semi-angle-to-face",
-            20.0,
-        )
-
-        if (
-            np.isfinite(efit["A"])
-            and np.isfinite(angle)
-        ):
-
-            E_rec = (
-                efit["A"]
-                * 4
-                * (1 - nu**2)
-                / (
-                    3
-                    * math.tan(
-                        math.radians(
-                            angle
-                        )
-                    )
-                )
+        E_rec = (
+            reconstructed_modulus(
+                efit,
+                proc,
             )
-
-        else:
-            E_rec = np.nan
+        )
 
         finite_scores = {
             m: s
@@ -936,23 +1306,42 @@ def process_folder(
             score < 0.25
             and ratio > 3
         ):
-            confidence = "high"
+            confidence = (
+                "high"
+            )
 
         elif (
             score < 1.0
             and ratio > 1.5
         ):
-            confidence = "medium"
+            confidence = (
+                "medium"
+            )
 
         else:
-            confidence = "low"
+            confidence = (
+                "low"
+            )
 
         rows.append(
             {
-                "file": txt.name,
-                "position_index": curve["index"],
-                "x_position_m": curve["xPosition"],
-                "y_position_m": curve["yPosition"],
+                "file":
+                    txt.name,
+
+                "position_index":
+                    curve[
+                        "index"
+                    ],
+
+                "x_position_m":
+                    curve[
+                        "xPosition"
+                    ],
+
+                "y_position_m":
+                    curve[
+                        "yPosition"
+                    ],
 
                 "deepest_x_nm":
                     np.min(
@@ -961,77 +1350,126 @@ def process_folder(
                     * 1e9,
 
                 "linear_xmax_nm":
-                    lin["xmax_eff"] * 1e9
-                    if lin
-                    else np.nan,
+                    (
+                        lin[
+                            "xmax_eff"
+                        ]
+                        * 1e9
+                        if lin
+                        else np.nan
+                    ),
 
                 "linear_interval_lo_nm":
-                    lin["interval_lo"] * 1e9
-                    if lin
-                    else np.nan,
+                    (
+                        lin[
+                            "interval_lo"
+                        ]
+                        * 1e9
+                        if lin
+                        else np.nan
+                    ),
 
                 "linear_interval_hi_nm":
-                    lin["interval_hi"] * 1e9
-                    if lin
-                    else np.nan,
+                    (
+                        lin[
+                            "interval_hi"
+                        ]
+                        * 1e9
+                        if lin
+                        else np.nan
+                    ),
 
                 "jpk_slope_N_per_m":
                     target_slope,
 
                 "reconstructed_slope_N_per_m":
-                    lin["slope"]
-                    if lin
-                    else np.nan,
+                    (
+                        lin[
+                            "slope"
+                        ]
+                        if lin
+                        else np.nan
+                    ),
 
                 "slope_abs_error":
-                    lin["err"]
-                    if lin
-                    else np.nan,
+                    (
+                        lin[
+                            "err"
+                        ]
+                        if lin
+                        else np.nan
+                    ),
 
                 "elastic_mode":
                     mode,
 
                 "elastic_xmin_nm":
-                    efit["xmin"] * 1e9
-                    if np.isfinite(
-                        efit["xmin"]
-                    )
-                    else -np.inf,
+                    (
+                        efit[
+                            "xmin"
+                        ]
+                        * 1e9
+                        if np.isfinite(
+                            efit[
+                                "xmin"
+                            ]
+                        )
+                        else -np.inf
+                    ),
 
                 "elastic_xmin_interval_lo_nm":
-                    xmin_int[0] * 1e9
-                    if np.isfinite(
+                    (
                         xmin_int[0]
-                    )
-                    else -np.inf,
+                        * 1e9
+                        if np.isfinite(
+                            xmin_int[0]
+                        )
+                        else -np.inf
+                    ),
 
                 "elastic_xmin_interval_hi_nm":
-                    xmin_int[1] * 1e9
-                    if np.isfinite(
+                    (
                         xmin_int[1]
-                    )
-                    else -np.inf,
+                        * 1e9
+                        if np.isfinite(
+                            xmin_int[1]
+                        )
+                        else -np.inf
+                    ),
 
                 "elastic_xmax_nm":
-                    efit["xmax"] * 1e9
-                    if np.isfinite(
-                        efit["xmax"]
-                    )
-                    else np.inf,
+                    (
+                        efit[
+                            "xmax"
+                        ]
+                        * 1e9
+                        if np.isfinite(
+                            efit[
+                                "xmax"
+                            ]
+                        )
+                        else np.inf
+                    ),
 
                 "elastic_xmax_interval_lo_nm":
-                    xmax_int[0] * 1e9
-                    if np.isfinite(
+                    (
                         xmax_int[0]
-                    )
-                    else np.inf,
+                        * 1e9
+                        if np.isfinite(
+                            xmax_int[0]
+                        )
+                        else np.inf
+                    ),
 
                 "elastic_xmax_interval_hi_nm":
-                    xmax_int[1] * 1e9
-                    if np.isfinite(
+                    (
                         xmax_int[1]
-                    )
-                    else np.inf,
+                        * 1e9
+                        if np.isfinite(
+                            xmax_int[1]
+                        )
+                        else np.inf
+                    ),
 
                 "jpk_young_modulus_Pa":
                     target["E"],
@@ -1039,29 +1477,89 @@ def process_folder(
                 "reconstructed_young_modulus_Pa":
                     E_rec,
 
+                "young_modulus_abs_error_Pa":
+                    (
+                        abs(
+                            E_rec
+                            - target["E"]
+                        )
+                        if (
+                            np.isfinite(
+                                E_rec
+                            )
+                            and np.isfinite(
+                                target["E"]
+                            )
+                        )
+                        else np.nan
+                    ),
+
+                "young_modulus_rel_error_percent":
+                    (
+                        abs(
+                            E_rec
+                            - target["E"]
+                        )
+                        / abs(
+                            target["E"]
+                        )
+                        * 100
+                        if (
+                            np.isfinite(
+                                E_rec
+                            )
+                            and np.isfinite(
+                                target["E"]
+                            )
+                            and target["E"]
+                            != 0
+                        )
+                        else np.nan
+                    ),
+
                 "jpk_contact_point_nm":
-                    target["contact"]
-                    * 1e9,
+                    (
+                        target[
+                            "contact"
+                        ]
+                        * 1e9
+                    ),
 
                 "reconstructed_contact_point_nm":
-                    efit["xc"]
-                    * 1e9,
+                    (
+                        efit["xc"]
+                        * 1e9
+                    ),
 
                 "jpk_baseline_pN":
-                    target["baseline"]
-                    * 1e12,
+                    (
+                        target[
+                            "baseline"
+                        ]
+                        * 1e12
+                    ),
 
                 "reconstructed_baseline_pN":
-                    efit["baseline"]
-                    * 1e12,
+                    (
+                        efit[
+                            "baseline"
+                        ]
+                        * 1e12
+                    ),
 
                 "jpk_rms_pN":
-                    target["rms"]
-                    * 1e12,
+                    (
+                        target[
+                            "rms"
+                        ]
+                        * 1e12
+                    ),
 
                 "reconstructed_rms_pN":
-                    efit["rms"]
-                    * 1e12,
+                    (
+                        efit["rms"]
+                        * 1e12
+                    ),
 
                 "elastic_score":
                     score,
@@ -1095,6 +1593,7 @@ def process_folder(
             f"elasticity={mode} | "
             f'xmin={rows[-1]["elastic_xmin_nm"]} | '
             f'xmax={rows[-1]["elastic_xmax_nm"]} | '
+            f"E={E_rec:.6g} Pa | "
             f"score={score:.3g}"
         )
 
@@ -1103,7 +1602,9 @@ def process_folder(
         exist_ok=True,
     )
 
-    out = pd.DataFrame(rows)
+    out = pd.DataFrame(
+        rows
+    )
 
     csv_path = (
         outdir
@@ -1119,7 +1620,6 @@ def process_folder(
     )
 
     try:
-
         xlsx_path = (
             outdir
             / (
@@ -1134,7 +1634,6 @@ def process_folder(
         )
 
     except Exception as e:
-
         xlsx_path = None
 
         print(
@@ -1149,7 +1648,6 @@ def process_folder(
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description=(
             "Recover JPK linear and elasticity "
@@ -1203,21 +1701,26 @@ def main():
         ),
     )
 
-    args = parser.parse_args()
+    args = (
+        parser.parse_args()
+    )
 
     if args.recursive:
-
         folders = [
             p
             for p
             in [
                 args.input,
-                *args.input.rglob("*"),
+                *args.input.rglob(
+                    "*"
+                ),
             ]
             if (
                 p.is_dir()
                 and any(
-                    p.glob("*.tsv")
+                    p.glob(
+                        "*.tsv"
+                    )
                 )
             )
         ]
@@ -1234,7 +1737,6 @@ def main():
         )
 
     for folder in folders:
-
         print(
             "\n===",
             folder,
@@ -1242,7 +1744,6 @@ def main():
         )
 
         try:
-
             process_folder(
                 folder,
                 args.output,
@@ -1251,7 +1752,6 @@ def main():
             )
 
         except Exception as e:
-
             print(
                 "ERROR:",
                 folder,
