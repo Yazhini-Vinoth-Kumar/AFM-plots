@@ -1,0 +1,43 @@
+AFM BOUNDARY SELECTION CONSISTENCY
+Good reconstructions only
+Near-25 definition: 23 to 27 nm
+
+LIVE  n=359
+  Linear boundary near 25 nm: 100.0%
+  Finite elasticity XMin near 25 nm: 99.4%
+  Spearman, max indentation vs linear boundary: -0.015
+  Spearman, max indentation vs elasticity XMin: -0.014
+
+DEAD  n=272
+  Linear boundary near 25 nm: 7.0%
+  Finite elasticity XMin near 25 nm: 9.5%
+  Spearman, max indentation vs linear boundary: 0.571
+  Spearman, max indentation vs elasticity XMin: 0.645
+
+20  n=414
+  Linear boundary near 25 nm: 96.4%
+  Finite elasticity XMin near 25 nm: 75.7%
+  Spearman, max indentation vs linear boundary: -0.026
+  Spearman, max indentation vs elasticity XMin: -0.297
+
+320  n=345
+  Linear boundary near 25 nm: 35.1%
+  Finite elasticity XMin near 25 nm: 42.1%
+  Spearman, max indentation vs linear boundary: 0.326
+  Spearman, max indentation vs elasticity XMin: -0.160
+
+CELL-LEVEL SUMMARY
+
+group  cell  n_curves  linear_near_25_pct  elastic_near_25_pct  median_max_indent_nm  median_linear_boundary_nm  median_elasticity_xmin_nm
+   20 cell1       170              100.00                99.41                 60.55                      25.11                      25.01
+   20 cell2       143               95.80                57.04                 59.35                      25.13                      25.09
+   20 cell3       101               91.09                61.46                 64.55                      25.13                      25.21
+  320 cell1       110               74.55                88.00                 43.62                      25.11                      25.16
+  320 cell2       113               23.01                 9.52                 42.49                      23.25                      30.65
+  320 cell3       122               10.66                30.58                 58.95                      26.12                      21.36
+ dead cell1        81                6.17                 6.82                 21.39                       7.71                      16.98
+ dead cell2       100                8.00                10.26                 31.40                       8.20                      18.27
+ dead cell3        91                6.59                10.87                 28.35                      14.90                      19.26
+ live cell1       101              100.00                98.02                 75.48                      25.13                      25.04
+ live cell2       139              100.00               100.00                 78.69                      25.14                      25.04
+ live cell3       119              100.00               100.00                 62.99                      25.11                      25.02
