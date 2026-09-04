@@ -513,20 +513,41 @@ def elastic_score(
 
     terms = []
 
-    for key, tkey in [
-        (
-            "xc",
-            "contact",
-        ),
-        (
-            "baseline",
-            "baseline",
-        ),
+    # JPK operation.5.shift-curves=true reports contact
+    # point and baseline in shifted coordinates. Our fit
+    # is performed in the unshifted TXT coordinates, so
+    # those two quantities are not directly comparable.
+    # RMS and Young's modulus remain comparable.
+    shift_curves = (
+        str(
+            proc.get(
+                "operation.5.shift-curves",
+                "false",
+            )
+        ).strip().lower()
+        == "true"
+    )
+
+    score_fields = [
         (
             "rms",
             "rms",
         ),
-    ]:
+    ]
+
+    if not shift_curves:
+        score_fields = [
+            (
+                "xc",
+                "contact",
+            ),
+            (
+                "baseline",
+                "baseline",
+            ),
+        ] + score_fields
+
+    for key, tkey in score_fields:
         tv = target.get(
             tkey,
             np.nan,
