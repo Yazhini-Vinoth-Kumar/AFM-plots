@@ -1,0 +1,54 @@
+AFM FIT BOUNDARY NORMALIZATION
+Primary analysis includes boundary_qc = good only
+Total good curves: 1390
+
+LIVE  n=359
+  Maximum indentation: median=73.09 nm, IQR=63.15 to 81.99 nm
+  Linear boundary depth: median=25.13 nm, IQR=25.06 to 25.23 nm
+  Linear boundary / maximum indentation: median=34.31 %, IQR=30.59 to 39.76 %
+  High-force linear fit span: median=65.69 %, IQR=60.24 to 69.41 %
+  Elasticity XMin depth: median=25.03 nm, IQR=24.96 to 25.13 nm
+  Elasticity XMin / maximum indentation: median=34.23 %, IQR=30.51 to 39.62 %
+  Elasticity modes:
+    xmin_inf: 356 (99.2%)
+    finite_both: 3 (0.8%)
+  Finite elasticity XMax: 3 (0.8%)
+
+DEAD  n=272
+  Maximum indentation: median=27.76 nm, IQR=19.88 to 35.69 nm
+  Linear boundary depth: median=10.03 nm, IQR=4.79 to 18.29 nm
+  Linear boundary / maximum indentation: median=44.45 %, IQR=25.10 to 57.50 %
+  High-force linear fit span: median=55.55 %, IQR=42.50 to 74.90 %
+  Elasticity XMin depth: median=18.43 nm, IQR=14.58 to 23.97 nm
+  Elasticity XMin / maximum indentation: median=73.44 %, IQR=55.25 to 100.00 %
+  Elasticity modes:
+    xmin_inf: 161 (59.2%)
+    full: 104 (38.2%)
+    finite_both: 7 (2.6%)
+  Finite elasticity XMax: 7 (2.6%)
+
+20  n=414
+  Maximum indentation: median=61.16 nm, IQR=53.85 to 69.74 nm
+  Linear boundary depth: median=25.12 nm, IQR=25.06 to 25.24 nm
+  Linear boundary / maximum indentation: median=41.09 %, IQR=35.80 to 46.64 %
+  High-force linear fit span: median=58.91 %, IQR=53.36 to 64.20 %
+  Elasticity XMin depth: median=25.05 nm, IQR=24.95 to 25.30 nm
+  Elasticity XMin / maximum indentation: median=41.91 %, IQR=35.97 to 49.13 %
+  Elasticity modes:
+    xmin_inf: 404 (97.6%)
+    full: 6 (1.4%)
+    finite_both: 4 (1.0%)
+  Finite elasticity XMax: 4 (1.0%)
+
+320  n=345
+  Maximum indentation: median=49.80 nm, IQR=40.02 to 59.16 nm
+  Linear boundary depth: median=25.09 nm, IQR=15.91 to 28.51 nm
+  Linear boundary / maximum indentation: median=51.57 %, IQR=39.63 to 61.91 %
+  High-force linear fit span: median=48.43 %, IQR=38.09 to 60.37 %
+  Elasticity XMin depth: median=25.03 nm, IQR=22.07 to 32.70 nm
+  Elasticity XMin / maximum indentation: median=53.57 %, IQR=39.69 to 99.53 %
+  Elasticity modes:
+    xmin_inf: 256 (74.2%)
+    full: 86 (24.9%)
+    finite_both: 3 (0.9%)
+  Finite elasticity XMax: 3 (0.9%)
